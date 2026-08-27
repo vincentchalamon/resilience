@@ -4,6 +4,9 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 
+# Le .gitignore global de la machine ignore *.jar : on re-inclut le wrapper Gradle (requis par la CI)
+!android/gradle/wrapper/gradle-wrapper.jar
+
 # Android build outputs
 android/.gradle/
 android/build/
