@@ -51,30 +51,28 @@
   .back { border: none; background: transparent; color: var(--accent); font-size: 1.7rem; line-height: 1;
     padding: 4px 8px 6px; cursor: pointer; font-family: inherit; }
   .mode h1 { margin: 0; font-size: 1.5rem; font-weight: 700; color: var(--accent); }
-  .stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center; gap: 22px; overflow-y: auto; }
+  .stage { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; text-align: center; gap: 22px; overflow-y: auto; }
 
   .mode.anx { --accent: var(--anx); --tint: var(--anx-tint); }
   .mode.env { --accent: var(--env); --tint: var(--env-tint); }
   .mode.rep { --accent: var(--rep); --tint: var(--rep-tint); }
 
-  /* Respiration */
-  #anx-breath { display: flex; flex-direction: column; align-items: center; gap: 20px;
-    opacity: 0; transition: opacity .4s ease; }
-  #anx-breath.show { opacity: 1; }
+  /* Ecran anxiete : 3 etats empiles et centres, un seul visible a la fois */
+  #anx-breath, #anx-step, #anx-done { position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+  #anx-breath.show, #anx-step.show, #anx-done.show { opacity: 1; pointer-events: auto; }
+  #anx-breath { gap: 20px; }
   .circle-wrap { position: relative; width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; }
   #anx-circle { width: 120px; height: 120px; border-radius: 50%; background: var(--anx-tint);
     border: 2px solid var(--anx); transition-property: transform; transition-timing-function: ease-in-out; }
   #anx-circle.big { transform: scale(1.85); }
   #anx-count { position: absolute; font-size: 2.4rem; font-weight: 600; color: var(--anx);
     font-variant-numeric: tabular-nums; }
-
-  /* Ancrage */
-  #anx-step { opacity: 0; transition: opacity .4s ease; font-size: 1.7rem; font-weight: 600; padding: 0 10px; }
-  #anx-step.show { opacity: 1; }
+  #anx-step { font-size: 1.7rem; font-weight: 600; padding: 0 10px; }
   #anx-step-timer { display: block; margin-top: 16px; font-size: 1rem; color: var(--text-2); font-weight: 400; }
-  #anx-done { opacity: 0; transition: opacity .4s ease; font-size: 1.5rem; font-weight: 600; color: var(--rep); }
-  #anx-done.show { opacity: 1; }
+  #anx-done { font-size: 1.5rem; font-weight: 600; color: var(--rep); padding: 0 10px; }
   #anx-done button { display: block; margin: 22px auto 0; }
 
   /* Timers */
@@ -84,18 +82,21 @@
     font-weight: 600; font-family: inherit; padding: 14px 30px; cursor: pointer; }
   .btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
 
-  #sucre-phrases { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
-  #sucre-phrases li { opacity: 0; transition: opacity .5s ease; font-size: 1.2rem; }
-  #sucre-phrases li.show { opacity: 1; }
-  #sucre-end, #repas-end { opacity: 0; transition: opacity .4s ease; font-size: 1.25rem; font-weight: 600; padding: 0 6px; }
-  #sucre-end.show, #repas-end.show { opacity: 1; }
+  /* Revelations : retirees du flux tant que masquees (garde le contenu centre) */
+  .reveal, #sucre-phrases li { opacity: 0; transition: opacity .4s ease, display .4s allow-discrete; }
+  .reveal:not(.show), #sucre-phrases li:not(.show) { display: none; }
+  .reveal.show, #sucre-phrases li.show { opacity: 1; display: block; }
+  @starting-style { .reveal.show, #sucre-phrases li.show { opacity: 0; } }
 
-  #repas-alert { opacity: 0; transition: opacity .3s ease; background: var(--rep-tint); color: var(--rep);
+  #sucre-phrases { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  #sucre-phrases li { font-size: 1.2rem; }
+  #sucre-end, #repas-end { font-size: 1.25rem; font-weight: 600; padding: 0 6px; }
+
+  #repas-alert { background: var(--rep-tint); color: var(--rep);
     border-radius: 14px; padding: 16px 18px; font-weight: 600; font-size: 1.15rem; }
-  #repas-alert.show { opacity: 1; animation: pulse 1.4s ease-in-out infinite; }
+  #repas-alert.show { animation: pulse 1.4s ease-in-out infinite; }
   @keyframes pulse { 50% { transform: scale(1.04); } }
-  #repas-wait { opacity: 0; transition: opacity .4s ease; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-  #repas-wait.show { opacity: 1; }
+  #repas-wait.show { display: flex; flex-direction: column; align-items: center; gap: 12px; }
   #repas-wait .timer-big { color: var(--red); }
   #repas-wait .hint { color: var(--red); font-weight: 600; }
 
@@ -137,7 +138,7 @@
         <li>Marche un peu.</li>
         <li>Fais une activite manuelle.</li>
       </ul>
-      <p id="sucre-end">Toujours envie ? Prends un fruit, assis, en le savourant, sans culpabiliser.</p>
+      <p id="sucre-end" class="reveal">Toujours envie ? Prends un fruit, assis, en le savourant, sans culpabiliser.</p>
     </div>
   </section>
 
@@ -145,13 +146,13 @@
     <div class="bar"><button class="back" data-go="accueil" aria-label="Retour">&larr;</button><h1>Repas</h1></div>
     <div class="stage">
       <div class="timer-box"><div class="timer-big" id="repas-timer">20:00</div></div>
-      <div id="repas-alert">Pose les couverts. Encore faim, ou habitude ?</div>
+      <div id="repas-alert" class="reveal">Pose les couverts. Encore faim, ou habitude ?</div>
       <button class="btn btn-ghost" id="repas-again" hidden>Encore faim ?</button>
-      <div id="repas-wait">
+      <div id="repas-wait" class="reveal">
         <div class="timer-big" id="repas-wait-timer">10:00</div>
         <p class="hint">Patiente. La satiete rattrape souvent toute seule.</p>
       </div>
-      <p id="repas-end">Prends un fruit, assis, en le savourant, sans culpabiliser.</p>
+      <p id="repas-end" class="reveal">Prends un fruit, assis, en le savourant, sans culpabiliser.</p>
     </div>
   </section>
 
