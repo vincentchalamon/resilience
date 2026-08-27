@@ -10,7 +10,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBarLaunch"
@@ -31,15 +31,15 @@
 
         </activity>
 
-        <receiver android:name=".AnxieteWidget" android:exported="false">
+        <receiver android:name=".AnxieteWidget" android:label="@string/widget_anxiete" android:exported="false">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_anxiete_info" />
         </receiver>
-        <receiver android:name=".SucreWidget" android:exported="false">
+        <receiver android:name=".SucreWidget" android:label="@string/widget_sucre" android:exported="false">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_sucre_info" />
         </receiver>
-        <receiver android:name=".RepasWidget" android:exported="false">
+        <receiver android:name=".RepasWidget" android:label="@string/widget_repas" android:exported="false">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_repas_info" />
         </receiver>

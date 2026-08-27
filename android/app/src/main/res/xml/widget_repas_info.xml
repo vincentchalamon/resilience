@@ -6,6 +6,8 @@
     android:targetCellHeight="1"
     android:updatePeriodMillis="0"
     android:initialLayout="@layout/widget_mode"
+    android:previewLayout="@layout/widget_mode"
     android:previewImage="@mipmap/ic_launcher"
+    android:description="@string/widget_repas"
     android:resizeMode="none"
     android:widgetCategory="home_screen" />

@@ -12,13 +12,13 @@
     "apk": "cap sync android && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
-    "@capacitor/android": "^6.1.2",
-    "@capacitor/app": "^6.0.1",
-    "@capacitor/core": "^6.1.2"
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/core": "^8.5.0"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.0",
-    "@playwright/test": "^1.47.2",
+    "@playwright/test": "^1.62.1",
     "http-server": "^14.1.1",
     "vitest": "^4.1.11"
   }

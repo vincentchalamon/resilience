@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { fmt, parseDeepLink, breathPhase, groundingSteps, DURATIONS } from '../../www/app.js';
+import { fmt, parseDeepLink, breathPhase, groundingSteps, DURATIONS, aggregate, dayKey } from '../../www/app.js';
 
 describe('fmt', () => {
   it('formate mm:ss', () => {
@@ -52,11 +52,31 @@ describe('groundingSteps', () => {
     expect(steps[0].text).toMatch(/^Nomme 5/);
     expect(steps[1].text).toMatch(/^Nomme 4/);
     expect(steps[2].text).toMatch(/^Nomme 3/);
-    expect(steps[3].text).toMatch(/2 longues expirations/);
+    expect(steps[3].text).toMatch(/2 longues respirations/);
     expect(steps[4].text).toMatch(/1 tension/);
   });
   it('a une couleur distincte par etape', () => {
     const vars = groundingSteps().map((s) => s.cssVar);
     expect(new Set(vars).size).toBe(5);
+  });
+});
+
+describe('aggregate', () => {
+  const today = new Date(2026, 7, 27); // 2026-08-27 (local)
+  it('compte par jour et par type sur la fenetre', () => {
+    const hist = [
+      { d: '2026-08-27', type: 'anxiete' },
+      { d: '2026-08-27', type: 'anxiete' },
+      { d: '2026-08-27', type: 'sucre' },
+      { d: '2026-08-26', type: 'sucre' },
+      { d: '2020-01-01', type: 'anxiete' }, // hors fenetre -> ignore
+    ];
+    const rows = aggregate(hist, 14, today);
+    expect(rows).toHaveLength(14);
+    expect(rows[13]).toEqual({ day: '2026-08-27', anxiete: 2, sucre: 1 });
+    expect(rows[12]).toEqual({ day: '2026-08-26', anxiete: 0, sucre: 1 });
+  });
+  it('dayKey est une date locale YYYY-MM-DD', () => {
+    expect(dayKey(today)).toBe('2026-08-27');
   });
 });

@@ -7,23 +7,32 @@
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   :root {
-    --bg: #F4F5F2; --surface: #FFFFFF; --border: #E4E6E1;
-    --text: #2A2E2C; --text-2: #5E635F;
-    --anx: #3F7078; --anx-tint: #E6EFEF;
-    --env: #A4626C; --env-tint: #F3E7E9;
-    --rep: #5F7D54; --rep-tint: #E8EFE3;
-    --red: #B23A3A; --red-tint: #F6E4E3;
-    --g1: #3F7078; --g2: #5F7D54; --g3: #A4626C; --g4: #9A7B2E; --g5: #6C5B8A;
+    --bg: #F3F5F1; --surface: #FFFFFF; --border: #DCE0DA;
+    --text: #1F2320; --text-2: #545A54;
+    --anx: #0E8CA6; --anx-tint: #D5EFF4;
+    --env: #D23A56; --env-tint: #FBE0E6;
+    --rep: #2F9E3F; --rep-tint: #DDF3DD;
+    --red: #E23B3B;
+    --g1: #0E8CA6; --g2: #2F9E3F; --g3: #D23A56; --g4: #D18A12; --g5: #7A54D8;
+  }
+  :root[data-theme="dark"] {
+    --bg: #141715; --surface: #21251F; --border: #363B35;
+    --text: #ECEEEA; --text-2: #ADB2AC;
+    --anx: #4FCFE6; --anx-tint: #0E3138;
+    --env: #FF7E97; --env-tint: #381A22;
+    --rep: #67D46E; --rep-tint: #14311A;
+    --red: #FF6E6E;
+    --g1: #4FCFE6; --g2: #67D46E; --g3: #FF7E97; --g4: #EDBB4E; --g5: #B79BF5;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #191C1A; --surface: #232724; --border: #333833;
-      --text: #E9EBE7; --text-2: #A7ACA6;
-      --anx: #84B4BD; --anx-tint: #1E2C2E;
-      --env: #D39BA3; --env-tint: #2E2224;
-      --rep: #9CBB8F; --rep-tint: #212B1D;
-      --red: #E58E8E; --red-tint: #2E1E1E;
-      --g1: #84B4BD; --g2: #9CBB8F; --g3: #D39BA3; --g4: #D8BE7A; --g5: #B4A6D2;
+    :root:not([data-theme="light"]) {
+      --bg: #141715; --surface: #21251F; --border: #363B35;
+      --text: #ECEEEA; --text-2: #ADB2AC;
+      --anx: #4FCFE6; --anx-tint: #0E3138;
+      --env: #FF7E97; --env-tint: #381A22;
+      --rep: #67D46E; --rep-tint: #14311A;
+      --red: #FF6E6E;
+      --g1: #4FCFE6; --g2: #67D46E; --g3: #FF7E97; --g4: #EDBB4E; --g5: #B79BF5;
     }
   }
   html, body { height: 100%; }
@@ -33,19 +42,22 @@
     line-height: 1.5; -webkit-font-smoothing: antialiased; overflow: hidden;
   }
   #app { height: 100dvh; position: relative; }
-
   #app > [data-screen] { position: absolute; inset: 0; display: none; }
   #app > .active { display: flex; }
 
   /* Accueil */
-  #accueil { flex-direction: column; gap: 14px; padding: max(20px, env(safe-area-inset-top)) 20px 24px; justify-content: center; }
+  #accueil { flex-direction: column; }
+  .home-bar { display: flex; justify-content: flex-end; padding: max(12px, env(safe-area-inset-top)) 14px 0; }
+  .hamburger { background: transparent; border: none; font-size: 1.9rem; line-height: 1; color: var(--text-2);
+    cursor: pointer; padding: 6px 10px; font-family: inherit; }
+  .home-btns { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 10px 20px 24px; }
   .home-btn { flex: 1 1 0; border: none; border-radius: 20px; font-size: 1.5rem; font-weight: 600;
     font-family: inherit; cursor: pointer; color: #fff; }
   .home-btn.anx { background: var(--anx); }
   .home-btn.env { background: var(--env); }
   .home-btn.rep { background: var(--rep); }
 
-  /* Ecrans modes */
+  /* Ecrans */
   .mode { flex-direction: column; padding: max(14px, env(safe-area-inset-top)) 20px 24px; }
   .bar { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
   .back { border: none; background: transparent; color: var(--accent); font-size: 1.7rem; line-height: 1;
@@ -54,22 +66,29 @@
   .stage { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center;
     justify-content: center; text-align: center; gap: 22px; overflow-y: auto; }
 
-  .mode.anx { --accent: var(--anx); --tint: var(--anx-tint); }
-  .mode.env { --accent: var(--env); --tint: var(--env-tint); }
-  .mode.rep { --accent: var(--rep); --tint: var(--rep-tint); }
+  .mode.anx { --accent: var(--anx); }
+  .mode.env { --accent: var(--env); }
+  .mode.rep { --accent: var(--rep); }
+  .mode.hist { --accent: var(--anx); }
 
-  /* Ecran anxiete : 3 etats empiles et centres, un seul visible a la fois */
+  /* Timeline */
+  .tl { position: relative; height: 8px; border-radius: 4px; overflow: hidden; display: flex;
+    margin: 2px 0 10px; background: var(--border); }
+  .tl-seg { height: 100%; }
+  .tl-cover { position: absolute; top: 0; right: 0; bottom: 0; background: var(--bg); opacity: .6; }
+
+  /* Anxiete : 3 etats empiles et centres */
   #anx-breath, #anx-step, #anx-done { position: absolute; inset: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     opacity: 0; pointer-events: none; transition: opacity .4s ease; }
   #anx-breath.show, #anx-step.show, #anx-done.show { opacity: 1; pointer-events: auto; }
-  #anx-breath { gap: 20px; }
+  #anx-breath { gap: 18px; }
   .circle-wrap { position: relative; width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; }
   #anx-circle { width: 120px; height: 120px; border-radius: 50%; background: var(--anx-tint);
     border: 2px solid var(--anx); transition-property: transform; transition-timing-function: ease-in-out; }
   #anx-circle.big { transform: scale(1.85); }
-  #anx-count { position: absolute; font-size: 2.4rem; font-weight: 600; color: var(--anx);
-    font-variant-numeric: tabular-nums; }
+  #anx-count { position: absolute; font-size: 2.4rem; font-weight: 600; color: var(--anx); font-variant-numeric: tabular-nums; }
+  #anx-word { color: var(--anx); font-weight: 500; font-size: 1.3rem; letter-spacing: .02em; }
   #anx-step { font-size: 1.7rem; font-weight: 600; padding: 0 10px; }
   #anx-step-timer { display: block; margin-top: 16px; font-size: 1rem; color: var(--text-2); font-weight: 400; }
   #anx-done { font-size: 1.5rem; font-weight: 600; color: var(--rep); padding: 0 10px; }
@@ -77,84 +96,143 @@
 
   /* Timers */
   .timer-big { font-size: 4rem; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
-  .timer-box.done .timer-big { opacity: .35; }
+  #repas-box.done .timer-big { opacity: .35; }
   .btn { border: none; border-radius: 999px; background: var(--accent); color: #fff; font-size: 1.1rem;
     font-weight: 600; font-family: inherit; padding: 14px 30px; cursor: pointer; }
   .btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
 
-  /* Revelations : retirees du flux tant que masquees (garde le contenu centre) */
-  .reveal, #sucre-phrases li { opacity: 0; transition: opacity .4s ease, display .4s allow-discrete; }
-  .reveal:not(.show), #sucre-phrases li:not(.show) { display: none; }
-  .reveal.show, #sucre-phrases li.show { opacity: 1; display: block; }
-  @starting-style { .reveal.show, #sucre-phrases li.show { opacity: 0; } }
+  .msg { opacity: 0; transition: opacity .3s ease; font-size: 1.25rem; padding: 0 6px; max-width: 22em; }
+  .msg.show { opacity: 1; }
+  .msg.flash { animation: flash 1.2s ease-in-out 2; }
+  @keyframes flash { 50% { color: var(--rep); transform: scale(1.03); } }
 
-  #sucre-phrases { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
-  #sucre-phrases li { font-size: 1.2rem; }
-  #sucre-end, #repas-end { font-size: 1.25rem; font-weight: 600; padding: 0 6px; }
-
-  #repas-alert { background: var(--rep-tint); color: var(--rep);
-    border-radius: 14px; padding: 16px 18px; font-weight: 600; font-size: 1.15rem; }
-  #repas-alert.show { animation: pulse 1.4s ease-in-out infinite; }
-  @keyframes pulse { 50% { transform: scale(1.04); } }
-  #repas-wait.show { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .reveal { opacity: 0; transition: opacity .4s ease, display .4s allow-discrete; }
+  .reveal:not(.show) { display: none; }
+  .reveal.show { opacity: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  @starting-style { .reveal.show { opacity: 0; } }
+  #repas-end { font-size: 1.25rem; font-weight: 600; padding: 0 6px; }
   #repas-wait .timer-big { color: var(--red); }
   #repas-wait .hint { color: var(--red); font-weight: 600; }
 
+  /* Historique */
+  .hist-body { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 18px; padding-top: 10px; width: 100%; }
+  .legend { display: flex; gap: 20px; font-size: .95rem; color: var(--text-2); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .legend i { width: 12px; height: 12px; border-radius: 3px; }
+  #hist-chart { width: 100%; }
+  .chart { width: 100%; height: auto; }
+  .chart .ax { fill: var(--text-2); font-size: 9px; }
+  .chart .grid { stroke: var(--border); stroke-width: 1; }
+  .hint-empty { color: var(--text-2); text-align: center; padding: 24px 12px; }
+
+  /* Menu */
+  #menu { position: absolute; inset: 0; z-index: 20; display: none; }
+  #menu.open { display: block; }
+  #menu .backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.45); }
+  #menu .sheet { position: absolute; top: 0; right: 0; width: min(80%, 320px); height: 100%;
+    background: var(--surface); box-shadow: -8px 0 24px rgba(0,0,0,.18);
+    padding: max(20px, env(safe-area-inset-top)) 18px 24px; display: flex; flex-direction: column; }
+  #menu h2 { margin: 4px 4px 6px; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--text-2); }
+  .menu-item { text-align: left; background: transparent; border: none; font: inherit; font-size: 1.15rem;
+    color: var(--text); padding: 14px 8px; border-radius: 10px; cursor: pointer; }
+  .menu-sep { height: 1px; background: var(--border); margin: 8px 0; }
+  .seg { display: flex; gap: 6px; padding: 0 4px; }
+  .seg button { flex: 1; padding: 10px 4px; border-radius: 10px; border: 1px solid var(--border);
+    background: transparent; color: var(--text-2); font: inherit; font-size: .95rem; cursor: pointer; }
+  .seg button.active { background: var(--anx); border-color: var(--anx); color: #fff; }
+
   @media (prefers-reduced-motion: reduce) {
     #anx-circle { transition: none; }
-    #repas-alert.show { animation: none; }
+    .msg.flash { animation: none; }
   }
 </style>
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('resilience-theme');
+      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    } catch (e) { /* stockage indisponible */ }
+  })();
+</script>
 </head>
 <body>
 <div id="app" data-current="accueil">
 
   <section id="accueil" data-screen="accueil">
-    <button class="home-btn anx" data-go="anxiete">Anxiete</button>
-    <button class="home-btn env" data-go="sucre">Envie de sucre</button>
-    <button class="home-btn rep" data-go="repas">Repas</button>
+    <div class="home-bar"><button class="hamburger" data-menu="open" aria-label="Menu">&#9776;</button></div>
+    <div class="home-btns">
+      <button class="home-btn anx" data-go="anxiete">Anxiété</button>
+      <button class="home-btn env" data-go="sucre">Envie de sucre</button>
+      <button class="home-btn rep" data-go="repas">Repas</button>
+    </div>
   </section>
 
   <section class="mode anx" data-screen="anxiete">
-    <div class="bar"><button class="back" data-go="accueil" aria-label="Retour">&larr;</button><h1>Anxiete</h1></div>
+    <div class="bar"><button class="back" data-go="accueil" aria-label="Retour">&larr;</button><h1>Anxiété</h1></div>
+    <div class="tl" id="anx-tl"></div>
     <div class="stage">
       <div id="anx-breath">
         <div class="circle-wrap"><div id="anx-circle"></div><div id="anx-count">4</div></div>
+        <div id="anx-word">Inspire</div>
       </div>
-      <p id="anx-step">&nbsp;<small id="anx-step-timer"></small></p>
-      <div id="anx-done">C’est passe. Tu as fait redescendre la vague.
+      <p id="anx-step"><span id="anx-step-text">&nbsp;</span><small id="anx-step-timer"></small></p>
+      <div id="anx-done">C’est passé. Tu as fait redescendre la vague.
         <button class="btn" data-go="accueil">Terminer</button></div>
     </div>
   </section>
 
   <section class="mode env" data-screen="sucre">
     <div class="bar"><button class="back" data-go="accueil" aria-label="Retour">&larr;</button><h1>Envie de sucre</h1></div>
+    <div class="tl" id="sucre-tl"></div>
     <div class="stage">
       <div class="timer-big" id="sucre-timer">15:00</div>
-      <button class="btn" id="sucre-btn">Demarrer</button>
-      <ul id="sucre-phrases">
-        <li>Ne decide pas maintenant, attends de voir.</li>
-        <li>Bois un grand verre d’eau.</li>
-        <li>Marche un peu.</li>
-        <li>Fais une activite manuelle.</li>
-      </ul>
-      <p id="sucre-end" class="reveal">Toujours envie ? Prends un fruit, assis, en le savourant, sans culpabiliser.</p>
+      <button class="btn" id="sucre-btn">Démarrer</button>
+      <p class="msg" id="sucre-msg">&nbsp;</p>
     </div>
   </section>
 
   <section class="mode rep" data-screen="repas">
     <div class="bar"><button class="back" data-go="accueil" aria-label="Retour">&larr;</button><h1>Repas</h1></div>
+    <div class="tl" id="repas-tl"></div>
     <div class="stage">
-      <div class="timer-box"><div class="timer-big" id="repas-timer">20:00</div></div>
-      <div id="repas-alert" class="reveal">Pose les couverts. Encore faim, ou habitude ?</div>
+      <div id="repas-box"><div class="timer-big" id="repas-timer">20:00</div></div>
+      <p class="msg" id="repas-msg">&nbsp;</p>
       <button class="btn btn-ghost" id="repas-again" hidden>Encore faim ?</button>
       <div id="repas-wait" class="reveal">
         <div class="timer-big" id="repas-wait-timer">10:00</div>
-        <p class="hint">Patiente. La satiete rattrape souvent toute seule.</p>
+        <p class="hint">Patiente. La satiété rattrape souvent toute seule.</p>
       </div>
       <p id="repas-end" class="reveal">Prends un fruit, assis, en le savourant, sans culpabiliser.</p>
     </div>
   </section>
+
+  <section class="mode hist" data-screen="historique">
+    <div class="bar"><button class="back" data-go="accueil" aria-label="Retour">&larr;</button><h1>Historique</h1></div>
+    <div class="hist-body">
+      <div class="legend">
+        <span><i style="background:var(--anx)"></i>Anxiété</span>
+        <span><i style="background:var(--env)"></i>Envie de sucre</span>
+      </div>
+      <div id="hist-chart"></div>
+    </div>
+  </section>
+
+  <div id="menu">
+    <div class="backdrop" data-menu="close"></div>
+    <aside class="sheet">
+      <h2>Menu</h2>
+      <button class="menu-item" data-go="historique" data-menu="close">Historique</button>
+      <div class="menu-sep"></div>
+      <h2>Thème</h2>
+      <div class="seg" id="theme-seg">
+        <button data-theme="light">Clair</button>
+        <button data-theme="dark">Sombre</button>
+        <button data-theme="system">Système</button>
+      </div>
+      <div class="menu-sep"></div>
+      <button class="menu-item" data-go="accueil" data-menu="close">Accueil</button>
+    </aside>
+  </div>
 
 </div>
 <script type="module">

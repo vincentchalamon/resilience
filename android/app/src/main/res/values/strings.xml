@@ -4,7 +4,7 @@
     <string name="title_activity_main">Trousse anti-crise</string>
     <string name="package_name">coop.tilleuls.resilience</string>
     <string name="custom_url_scheme">coop.tilleuls.resilience</string>
-    <string name="widget_anxiete">Anxiete</string>
+    <string name="widget_anxiete">Anxiété</string>
     <string name="widget_sucre">Envie de sucre</string>
     <string name="widget_repas">Repas</string>
 </resources>

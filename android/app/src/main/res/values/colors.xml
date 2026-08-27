@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="widget_text">#FFFFFF</color>
-    <color name="mode_anxiete">#3F7078</color>
-    <color name="mode_sucre">#A4626C</color>
-    <color name="mode_repas">#5F7D54</color>
+    <color name="mode_anxiete">#1E8AA0</color>
+    <color name="mode_sucre">#C6455C</color>
+    <color name="mode_repas">#3E9B44</color>
 </resources>
