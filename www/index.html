@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trousse anti-crise</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --bg: #F4F5F2; --surface: #FFFFFF; --border: #E4E6E1;
+    --text: #2A2E2C; --text-2: #5E635F;
+    --anx: #3F7078; --anx-tint: #E6EFEF;
+    --env: #A4626C; --env-tint: #F3E7E9;
+    --rep: #5F7D54; --rep-tint: #E8EFE3;
+    --red: #B23A3A; --red-tint: #F6E4E3;
+    --g1: #3F7078; --g2: #5F7D54; --g3: #A4626C; --g4: #9A7B2E; --g5: #6C5B8A;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #191C1A; --surface: #232724; --border: #333833;
+      --text: #E9EBE7; --text-2: #A7ACA6;
+      --anx: #84B4BD; --anx-tint: #1E2C2E;
+      --env: #D39BA3; --env-tint: #2E2224;
+      --rep: #9CBB8F; --rep-tint: #212B1D;
+      --red: #E58E8E; --red-tint: #2E1E1E;
+      --g1: #84B4BD; --g2: #9CBB8F; --g3: #D39BA3; --g4: #D8BE7A; --g5: #B4A6D2;
+    }
+  }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5; -webkit-font-smoothing: antialiased; overflow: hidden;
+  }
+  #app { height: 100dvh; position: relative; }
+
+  #app > [data-screen] { position: absolute; inset: 0; display: none; }
+  #app > .active { display: flex; }
+
+  /* Accueil */
+  #accueil { flex-direction: column; gap: 14px; padding: max(20px, env(safe-area-inset-top)) 20px 24px; justify-content: center; }
+  .home-btn { flex: 1 1 0; border: none; border-radius: 20px; font-size: 1.5rem; font-weight: 600;
+    font-family: inherit; cursor: pointer; color: #fff; }
+  .home-btn.anx { background: var(--anx); }
+  .home-btn.env { background: var(--env); }
+  .home-btn.rep { background: var(--rep); }
+
+  /* Ecrans modes */
+  .mode { flex-direction: column; padding: max(14px, env(safe-area-inset-top)) 20px 24px; }
+  .bar { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .back { border: none; background: transparent; color: var(--accent); font-size: 1.7rem; line-height: 1;
+    padding: 4px 8px 6px; cursor: pointer; font-family: inherit; }
+  .mode h1 { margin: 0; font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+  .stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: 22px; overflow-y: auto; }
+
+  .mode.anx { --accent: var(--anx); --tint: var(--anx-tint); }
+  .mode.env { --accent: var(--env); --tint: var(--env-tint); }
+  .mode.rep { --accent: var(--rep); --tint: var(--rep-tint); }
+
+  /* Respiration */
+  #anx-breath { display: flex; flex-direction: column; align-items: center; gap: 20px;
+    opacity: 0; transition: opacity .4s ease; }
+  #anx-breath.show { opacity: 1; }
+  .circle-wrap { position: relative; width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; }
+  #anx-circle { width: 120px; height: 120px; border-radius: 50%; background: var(--anx-tint);
+    border: 2px solid var(--anx); transition-property: transform; transition-timing-function: ease-in-out; }
+  #anx-circle.big { transform: scale(1.85); }
+  #anx-count { position: absolute; font-size: 2.4rem; font-weight: 600; color: var(--anx);
+    font-variant-numeric: tabular-nums; }
+
+  /* Ancrage */
+  #anx-step { opacity: 0; transition: opacity .4s ease; font-size: 1.7rem; font-weight: 600; padding: 0 10px; }
+  #anx-step.show { opacity: 1; }
+  #anx-step-timer { display: block; margin-top: 16px; font-size: 1rem; color: var(--text-2); font-weight: 400; }
+  #anx-done { opacity: 0; transition: opacity .4s ease; font-size: 1.5rem; font-weight: 600; color: var(--rep); }
+  #anx-done.show { opacity: 1; }
+  #anx-done button { display: block; margin: 22px auto 0; }
+
+  /* Timers */
+  .timer-big { font-size: 4rem; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .timer-box.done .timer-big { opacity: .35; }
+  .btn { border: none; border-radius: 999px; background: var(--accent); color: #fff; font-size: 1.1rem;
+    font-weight: 600; font-family: inherit; padding: 14px 30px; cursor: pointer; }
+  .btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+  #sucre-phrases { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  #sucre-phrases li { opacity: 0; transition: opacity .5s ease; font-size: 1.2rem; }
+  #sucre-phrases li.show { opacity: 1; }
+  #sucre-end, #repas-end { opacity: 0; transition: opacity .4s ease; font-size: 1.25rem; font-weight: 600; padding: 0 6px; }
+  #sucre-end.show, #repas-end.show { opacity: 1; }
+
+  #repas-alert { opacity: 0; transition: opacity .3s ease; background: var(--rep-tint); color: var(--rep);
+    border-radius: 14px; padding: 16px 18px; font-weight: 600; font-size: 1.15rem; }
+  #repas-alert.show { opacity: 1; animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 50% { transform: scale(1.04); } }
+  #repas-wait { opacity: 0; transition: opacity .4s ease; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  #repas-wait.show { opacity: 1; }
+  #repas-wait .timer-big { color: var(--red); }
+  #repas-wait .hint { color: var(--red); font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) {
+    #anx-circle { transition: none; }
+    #repas-alert.show { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div id="app" data-current="accueil">
+
+  <section id="accueil" data-screen="accueil">
+    <button class="home-btn anx" data-go="anxiete">Anxiete</button>
+    <button class="home-btn env" data-go="sucre">Envie de sucre</button>
+    <button class="home-btn rep" data-go="repas">Repas</button>
+  </section>
+
+  <section class="mode anx" data-screen="anxiete">
+    <div class="bar"><button class="back" data-go="accueil" aria-label="Retour">&larr;</button><h1>Anxiete</h1></div>
+    <div class="stage">
+      <div id="anx-breath">
+        <div class="circle-wrap"><div id="anx-circle"></div><div id="anx-count">4</div></div>
+      </div>
+      <p id="anx-step">&nbsp;<small id="anx-step-timer"></small></p>
+      <div id="anx-done">C’est passe. Tu as fait redescendre la vague.
+        <button class="btn" data-go="accueil">Terminer</button></div>
+    </div>
+  </section>
+
+  <section class="mode env" data-screen="sucre">
+    <div class="bar"><button class="back" data-go="accueil" aria-label="Retour">&larr;</button><h1>Envie de sucre</h1></div>
+    <div class="stage">
+      <div class="timer-big" id="sucre-timer">15:00</div>
+      <button class="btn" id="sucre-btn">Demarrer</button>
+      <ul id="sucre-phrases">
+        <li>Ne decide pas maintenant, attends de voir.</li>
+        <li>Bois un grand verre d’eau.</li>
+        <li>Marche un peu.</li>
+        <li>Fais une activite manuelle.</li>
+      </ul>
+      <p id="sucre-end">Toujours envie ? Prends un fruit, assis, en le savourant, sans culpabiliser.</p>
+    </div>
+  </section>
+
+  <section class="mode rep" data-screen="repas">
+    <div class="bar"><button class="back" data-go="accueil" aria-label="Retour">&larr;</button><h1>Repas</h1></div>
+    <div class="stage">
+      <div class="timer-box"><div class="timer-big" id="repas-timer">20:00</div></div>
+      <div id="repas-alert">Pose les couverts. Encore faim, ou habitude ?</div>
+      <button class="btn btn-ghost" id="repas-again" hidden>Encore faim ?</button>
+      <div id="repas-wait">
+        <div class="timer-big" id="repas-wait-timer">10:00</div>
+        <p class="hint">Patiente. La satiete rattrape souvent toute seule.</p>
+      </div>
+      <p id="repas-end">Prends un fruit, assis, en le savourant, sans culpabiliser.</p>
+    </div>
+  </section>
+
+</div>
+<script type="module">
+  import { init } from './app.js';
+  init();
+</script>
+</body>
+</html>

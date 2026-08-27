@@ -1,0 +1,25 @@
+{
+  "name": "resilience",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Trousse anti-crise - app Android (Capacitor) : respirer, calmer une envie de sucre, ralentir un repas.",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "serve": "http-server www -p 5173 -s",
+    "sync": "cap sync android",
+    "apk": "cap sync android && cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/app": "^6.0.1",
+    "@capacitor/core": "^6.1.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.2",
+    "@playwright/test": "^1.47.2",
+    "http-server": "^14.1.1",
+    "vitest": "^2.1.1"
+  }
+}
