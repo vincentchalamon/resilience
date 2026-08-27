@@ -20,6 +20,6 @@
     "@capacitor/cli": "^6.1.2",
     "@playwright/test": "^1.47.2",
     "http-server": "^14.1.1",
-    "vitest": "^2.1.1"
+    "vitest": "^4.1.11"
   }
 }
