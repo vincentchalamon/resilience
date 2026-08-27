@@ -3,15 +3,16 @@
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/widget_bg_anxiete"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="10dp">
 
     <TextView
-        android:id="@+id/widget_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:text="@string/widget_anxiete"
         android:textColor="@color/widget_text"
         android:textSize="15sp"
         android:textStyle="bold" />
