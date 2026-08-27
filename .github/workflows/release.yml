@@ -6,7 +6,6 @@ on:
 
 permissions:
   contents: write
-  packages: write
 
 jobs:
   apk:
@@ -30,18 +29,3 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           files: android/app/build/outputs/apk/debug/app-debug.apk
-      # Publie aussi l'APK comme artefact OCI dans GitHub Packages (ghcr), paquet "resilience".
-      - uses: oras-project/setup-oras@v1
-      - name: Publier l'APK sur GitHub Packages (ghcr)
-        env:
-          TAG: ${{ github.event.release.tag_name }}
-          OWNER: ${{ github.repository_owner }}
-          ACTOR: ${{ github.actor }}
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "$TOKEN" | oras login ghcr.io -u "$ACTOR" --password-stdin
-          REPO="ghcr.io/${OWNER,,}/resilience"
-          oras push "$REPO:$TAG" \
-            --artifact-type application/vnd.android.package-archive \
-            android/app/build/outputs/apk/debug/app-debug.apk:application/vnd.android.package-archive
-          oras tag "$REPO:$TAG" latest
