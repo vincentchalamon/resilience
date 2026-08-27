@@ -68,6 +68,10 @@ test('historique : enregistre les actions et trace le graphe', async ({ page }) 
   await page.getByRole('button', { name: 'Historique' }).click();
   await expect(page.locator('[data-screen="historique"]')).toHaveClass(/active/);
   await expect(page.locator('#hist-chart svg.chart')).toBeVisible();
+
+  page.on('dialog', (d) => d.accept());
+  await page.getByRole('button', { name: 'Effacer l’historique' }).click();
+  await expect(page.locator('#hist-chart .hint-empty')).toBeVisible();
 });
 
 test('theme : le menu bascule clair / sombre / systeme', async ({ page }) => {

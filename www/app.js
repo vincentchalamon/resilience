@@ -77,6 +77,10 @@ function loadHistory() {
   try { return JSON.parse(localStorage.getItem(HKEY)) || []; } catch { return []; }
 }
 
+function clearHistory() {
+  try { localStorage.removeItem(HKEY); } catch { /* stockage indisponible */ }
+}
+
 function recordAction(type, now = new Date()) {
   try {
     const h = loadHistory();
@@ -222,6 +226,14 @@ export function init(doc = document) {
   });
   markTheme(loadTheme());
   applyTheme(loadTheme(), doc);
+
+  // Effacer l'historique
+  const clearBtn = doc.getElementById('hist-clear');
+  if (clearBtn) clearBtn.addEventListener('click', () => {
+    if (typeof confirm === 'function' && !confirm('Effacer tout l’historique ?')) return;
+    clearHistory();
+    buildChart(doc.getElementById('hist-chart'));
+  });
 
   function handle(url) { const { screen } = parseDeepLink(url); if (screen) go(screen); }
   const cap = typeof window !== 'undefined' ? window.Capacitor : null;
