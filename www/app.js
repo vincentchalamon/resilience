@@ -1,4 +1,4 @@
-// Trousse anti-crise - logique SPA. Fonctions pures exportees pour les tests unitaires.
+// Résilience - logique SPA. Fonctions pures exportees pour les tests unitaires.
 
 export const DURATIONS = {
   breathInhale: 4,

@@ -1,4 +1,4 @@
-# Trousse anti-crise
+# Résilience
 
 App Android perso, outil de crise pour un profil TDAH + anxieux. Trois écrans qui **guident une action au lieu de la réfléchir** : faire redescendre l'anxiété (respiration guidée Inspire/Expire puis ancrage 5-4-3-2-1), laisser passer une envie de sucre (minuteur d'attente), et ralentir un repas (minuteur + pause à mi-repas). Chaque écran se lance en un tap depuis un **widget d'écran d'accueil**, un menu permet de suivre l'**historique** des envies, et le thème s'adapte (clair / sombre / système).
 
@@ -18,7 +18,7 @@ les Releases.
 L'app expose 3 widgets (Anxiété, Envie de sucre, Repas). Pour les poser :
 
 1. Appui long sur une zone vide de l'écran d'accueil → **Widgets**.
-2. Cherche **Trousse anti-crise** : trois tuiles distinctes (une par mode).
+2. Cherche **Résilience** : trois tuiles distinctes (une par mode).
 3. Glisse celle voulue sur l'écran.
 
 Un tap sur la tuile ouvre l'app directement sur l'écran correspondant et lance son minuteur.

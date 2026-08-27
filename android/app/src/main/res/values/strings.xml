@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Trousse anti-crise</string>
-    <string name="title_activity_main">Trousse anti-crise</string>
+    <string name="app_name">Résilience</string>
+    <string name="title_activity_main">Résilience</string>
     <string name="package_name">coop.tilleuls.resilience</string>
     <string name="custom_url_scheme">coop.tilleuls.resilience</string>
     <string name="widget_anxiete">Anxiété</string>
