@@ -223,7 +223,6 @@ export function init(doc = document) {
     stopScreen(name);
     show(name);
     stops[name] = starters[name]();
-    acquireWake();
   }
 
   doc.querySelectorAll('[data-go]').forEach((btn) => {
@@ -287,6 +286,7 @@ function applyTheme(t, doc = document) {
 }
 
 function startAnxiete(doc) {
+  acquireWake();
   const breath = doc.getElementById('anx-breath');
   const circle = doc.getElementById('anx-circle');
   const num = doc.getElementById('anx-count');
@@ -337,7 +337,7 @@ function startAnxiete(doc) {
       showStep();
       function showStep() {
         if (cancelled) return;
-        if (i >= GROUNDING_STEPS.length) { fade(done, true); return; }
+        if (i >= GROUNDING_STEPS.length) { releaseWake(); fade(done, true); return; }
         const s = GROUNDING_STEPS[i];
         stepText.textContent = s.text;
         step.style.color = `var(${s.cssVar})`;
@@ -375,6 +375,7 @@ function startSucre(doc) {
   }
 
   function run() {
+    acquireWake();
     const tl = renderTimeline(tlEl, [{ seconds: DURATIONS.sugar, color: 'var(--env)' }]);
     swapMsg(msg, SUGAR_PHRASES[0]);
     SUGAR_PHRASES.forEach((p, i) => {
@@ -383,6 +384,7 @@ function startSucre(doc) {
     });
     let elapsed = 0;
     stopTimer = countdown(DURATIONS.sugar, (left) => { disp.textContent = fmt(left); elapsed = DURATIONS.sugar - left; tl.set(elapsed); }, () => {
+      releaseWake();
       swapMsg(msg, MSG.sugarEnd);
       btn.textContent = 'Recommencer';
     });
@@ -391,6 +393,7 @@ function startSucre(doc) {
 
   function reset() {
     clearAll();
+    releaseWake();
     disp.textContent = fmt(DURATIONS.sugar);
     msg.classList.remove('show');
     renderTimeline(tlEl, [{ seconds: DURATIONS.sugar, color: 'var(--env)' }]);
@@ -404,6 +407,7 @@ function startSucre(doc) {
 }
 
 function startRepas(doc) {
+  acquireWake();
   const disp = doc.getElementById('repas-timer');
   const box = doc.getElementById('repas-box');
   const msg = doc.getElementById('repas-msg');
@@ -427,6 +431,7 @@ function startRepas(doc) {
     tl.set(elapsed);
     if (!paused && elapsed >= DURATIONS.mealPause) { paused = true; swapMsg(msg, MSG.mealPause); msg.classList.add('flash'); }
   }, () => {
+    releaseWake();
     box.classList.add('done');
     msg.classList.remove('show');
     again.hidden = false;
@@ -434,8 +439,9 @@ function startRepas(doc) {
 
   again.onclick = () => {
     again.hidden = true;
+    acquireWake();
     wait.classList.add('show');
-    stopWait = countdown(DURATIONS.mealWait, (left) => { waitDisp.textContent = fmt(left); }, () => { end.classList.add('show'); });
+    stopWait = countdown(DURATIONS.mealWait, (left) => { waitDisp.textContent = fmt(left); }, () => { releaseWake(); end.classList.add('show'); });
   };
 
   return () => { stopMain(); if (stopWait) stopWait(); again.onclick = null; };
