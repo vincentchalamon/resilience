@@ -259,7 +259,17 @@ export function init(doc = document) {
     if (wakeWanted && doc.visibilityState === 'visible') acquireWake();
   });
 
-  function handle(url) { const { screen } = parseDeepLink(url); if (screen) go(screen); }
+  // Au demarrage a froid via un widget, getLaunchUrl et appUrlOpen delivrent le
+  // meme deep-link : on ignore le doublon immediat pour ne pas compter 2 actions.
+  let lastLink = { url: null, at: 0 };
+  function handle(url) {
+    const { screen } = parseDeepLink(url);
+    if (!screen) return;
+    const now = Date.now();
+    if (url === lastLink.url && now - lastLink.at < 1500) return;
+    lastLink = { url, at: now };
+    go(screen);
+  }
   const cap = typeof window !== 'undefined' ? window.Capacitor : null;
   if (cap && cap.Plugins && cap.Plugins.App) {
     const { App } = cap.Plugins;
