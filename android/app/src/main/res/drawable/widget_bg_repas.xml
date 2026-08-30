@@ -3,21 +3,23 @@
     <!-- Biseau (arete) : lumiere du haut (clair en haut, sombre en bas), epaisseur uniforme -->
     <item>
         <shape android:shape="rectangle">
+            <size android:width="120dp" android:height="120dp" />
             <gradient
                 android:angle="270"
-                android:startColor="#89D28E"
+                android:startColor="#64AD69"
                 android:endColor="#2D7632" />
-            <corners android:radius="60dp" />
+            <corners android:radius="32dp" />
         </shape>
     </item>
     <!-- Face : degrade de la couleur du mode -->
     <item android:left="2dp" android:top="2dp" android:right="2dp" android:bottom="2dp">
         <shape android:shape="rectangle">
+            <size android:width="120dp" android:height="120dp" />
             <gradient
                 android:angle="135"
-                android:startColor="#56BE5D"
+                android:startColor="#4DAF54"
                 android:endColor="#2F7A34" />
-            <corners android:radius="58dp" />
+            <corners android:radius="30dp" />
         </shape>
     </item>
 </layer-list>
