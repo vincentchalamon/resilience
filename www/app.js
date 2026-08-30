@@ -154,6 +154,25 @@ function renderTimeline(el, segments) {
   return { total, set };
 }
 
+// --- Wake lock (garde l'ecran allume pendant un timer) ---
+
+let wakeLock = null;
+let wakeWanted = false;
+
+async function acquireWake() {
+  wakeWanted = true;
+  if (wakeLock || typeof navigator === 'undefined' || !navigator.wakeLock) return;
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release', () => { wakeLock = null; });
+  } catch { /* refuse ou indisponible : on ignore */ }
+}
+
+function releaseWake() {
+  wakeWanted = false;
+  if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+}
+
 // --- Runtime ---
 
 function countdown(seconds, onTick, onEnd) {
@@ -197,13 +216,14 @@ export function init(doc = document) {
   }
 
   function go(name) {
-    if (name === 'accueil') { SCREENS.forEach(stopScreen); show('accueil'); return; }
-    if (name === 'historique') { SCREENS.forEach(stopScreen); buildChart(doc.getElementById('hist-chart')); show('historique'); return; }
+    if (name === 'accueil') { SCREENS.forEach(stopScreen); releaseWake(); show('accueil'); return; }
+    if (name === 'historique') { SCREENS.forEach(stopScreen); releaseWake(); buildChart(doc.getElementById('hist-chart')); show('historique'); return; }
     if (!SCREENS.includes(name)) return;
     if (name === 'anxiete' || name === 'sucre') recordAction(name);
     stopScreen(name);
     show(name);
     stops[name] = starters[name]();
+    acquireWake();
   }
 
   doc.querySelectorAll('[data-go]').forEach((btn) => {
@@ -233,6 +253,11 @@ export function init(doc = document) {
     if (typeof confirm === 'function' && !confirm('Effacer tout l’historique ?')) return;
     clearHistory();
     buildChart(doc.getElementById('hist-chart'));
+  });
+
+  // Le wake lock saute quand l'app passe en arriere-plan : on le reprend au retour.
+  doc.addEventListener('visibilitychange', () => {
+    if (wakeWanted && doc.visibilityState === 'visible') acquireWake();
   });
 
   function handle(url) { const { screen } = parseDeepLink(url); if (screen) go(screen); }
