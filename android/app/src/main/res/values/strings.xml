@@ -6,5 +6,6 @@
     <string name="custom_url_scheme">io.github.vincentchalamon.resilience</string>
     <string name="widget_anxiete">Anxiété</string>
     <string name="widget_sucre">Envie de sucre</string>
+    <string name="widget_sucre_label">Envie de\nsucre</string>
     <string name="widget_repas">Repas</string>
 </resources>
