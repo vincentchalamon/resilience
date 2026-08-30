@@ -3,9 +3,14 @@ name: Release
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   apk:
@@ -23,9 +28,25 @@ jobs:
       - uses: android-actions/setup-android@v3
       - run: npm ci
       - run: npx cap sync android
-      # APK debug-signe : installable directement (sideload), aucun keystore a gerer.
-      - run: ./gradlew assembleDebug
+      # APK signe avec une cle de release stable (secrets) : mises a jour in-place sans perte de donnees.
+      - name: Decode keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.RESILIENCE_KEYSTORE_BASE64 }}
+        run: echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+      - run: ./gradlew assembleRelease
         working-directory: android
+        env:
+          RESILIENCE_KEYSTORE_FILE: ${{ runner.temp }}/release.keystore
+          RESILIENCE_KEYSTORE_PASSWORD: ${{ secrets.RESILIENCE_KEYSTORE_PASSWORD }}
+          RESILIENCE_KEY_ALIAS: ${{ secrets.RESILIENCE_KEY_ALIAS }}
+          RESILIENCE_KEY_PASSWORD: ${{ secrets.RESILIENCE_KEY_PASSWORD }}
+          RESILIENCE_VERSION_CODE: ${{ github.run_number }}
       - uses: softprops/action-gh-release@v2
+        if: github.event_name == 'release'
         with:
-          files: android/app/build/outputs/apk/debug/resilience.apk
+          files: android/app/build/outputs/apk/release/resilience.apk
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: resilience-apk
+          path: android/app/build/outputs/apk/release/resilience.apk

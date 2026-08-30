@@ -15,5 +15,9 @@ android/capacitor-cordova-android-plugins/build/
 android/local.properties
 android/.idea/
 
+# Keystore de signature (ne JAMAIS versionner)
+*.jks
+*.keystore
+
 # OS
 .DS_Store

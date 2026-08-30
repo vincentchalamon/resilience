@@ -1,4 +1,4 @@
-package coop.tilleuls.resilience;
+package io.github.vincentchalamon.resilience;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;

@@ -1,4 +1,4 @@
-package coop.tilleuls.resilience;
+package io.github.vincentchalamon.resilience;
 
 import com.getcapacitor.BridgeActivity;
 
