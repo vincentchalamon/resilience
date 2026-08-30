@@ -1,4 +1,4 @@
-package coop.tilleuls.resilience;
+package io.github.vincentchalamon.resilience;
 
 public class AnxieteWidget extends ModeWidget {
     protected String screen() { return "anxiete"; }

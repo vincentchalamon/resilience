@@ -41,7 +41,7 @@ npm run apk     # cap sync + build APK debug en local (android/app/build/outputs
 ```
 
 Stack : Capacitor 8 (WebView + code natif). Les widgets vivent dans
-`android/app/src/main/java/coop/tilleuls/resilience/` (`ModeWidget` + un provider par mode) ; un tap
+`android/app/src/main/java/io/github/vincentchalamon/resilience/` (`ModeWidget` + un provider par mode) ; un tap
 ouvre l'app via le deep-link `resilience://open?screen=<mode>&auto=1`.
 
 ## Sources des durées

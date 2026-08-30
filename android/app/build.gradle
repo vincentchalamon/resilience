@@ -4,10 +4,10 @@ def releaseKeystore = System.getenv("RESILIENCE_KEYSTORE_FILE")
 def releaseVersionCode = (System.getenv("RESILIENCE_VERSION_CODE") ?: "1").toInteger()
 
 android {
-    namespace = "coop.tilleuls.resilience"
+    namespace = "io.github.vincentchalamon.resilience"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "coop.tilleuls.resilience"
+        applicationId "io.github.vincentchalamon.resilience"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode releaseVersionCode
