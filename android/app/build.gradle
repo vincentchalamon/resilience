@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 
+def releaseKeystore = System.getenv("RESILIENCE_KEYSTORE_FILE")
+def releaseVersionCode = (System.getenv("RESILIENCE_VERSION_CODE") ?: "1").toInteger()
+
 android {
     namespace = "coop.tilleuls.resilience"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,7 +10,7 @@ android {
         applicationId "coop.tilleuls.resilience"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode releaseVersionCode
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
@@ -16,10 +19,23 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (releaseKeystore) {
+                storeFile file(releaseKeystore)
+                storePassword System.getenv("RESILIENCE_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("RESILIENCE_KEY_ALIAS")
+                keyPassword System.getenv("RESILIENCE_KEY_PASSWORD")
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (releaseKeystore) {
+                signingConfig signingConfigs.release
+            }
         }
     }
     applicationVariants.all { variant ->
